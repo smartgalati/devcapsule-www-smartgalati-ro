@@ -27,11 +27,17 @@ repository; the other prototypes it was chosen from, and the Google Cloud
 Storage and Firebase deployment scripts used for earlier previews, were
 removed on 2026-11-20 and remain in the git history.
 
-## GitHub Pages
+## Publishing
 
-[`.github/workflows/claude-rocada-pages.yml`](.github/workflows/claude-rocada-pages.yml)
-publishes the Rocada/test4 site to this repository's GitHub Pages site at
-`https://ccozianu.github.io/devcapsule-chessclub-website/` on every `main` change
-under `claude-rocada-site/`. Enabling Pages (Source: GitHub Actions) and plan
+Two steps, described in [the publishing guide](docs/publishing.md):
+
+1. Every `main` change under `claude-rocada-site/` is checked and published to
+   the **test site** by
+   [`.github/workflows/claude-rocada-pages.yml`](.github/workflows/claude-rocada-pages.yml),
+   which also saves the published files as a *website candidate* release.
+2. The production repository publishes one reviewed candidate, chosen by its
+   tag, to the **production site**.
+
+Enabling Pages (Source: GitHub Actions), the custom domains and plan
 eligibility for a private repository are owner steps; see
 [the GitHub Pages deployment guide](docs/github-pages-deployment.md).

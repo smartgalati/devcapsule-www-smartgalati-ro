@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 
 // Static output only. The public address defaults to the original preview address;
 // the GitHub Pages build sets
-// ROCADA_SITE (origin) and ROCADA_BASE (project path such as /devcapsule-chessclub-website)
+// ROCADA_SITE (origin) and ROCADA_BASE (project path such as /devcapsule-www-smartgalati-ro)
 // through scripts/pages.sh. Internal links read the base via src/lib/url.ts.
 const site = process.env.ROCADA_SITE || 'https://smartgalati-test4.mycodespace.ai';
 const base = (process.env.ROCADA_BASE || '/').replace(/\/+$/, '') || '/';

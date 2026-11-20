@@ -13,6 +13,7 @@
 
 ## Deployment Guides
 
+- [Publishing: test first, then production](docs/publishing.md)
 - [GitHub Pages deployment of the Rocada site](docs/github-pages-deployment.md)
 
 ## Engineering Records

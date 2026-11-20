@@ -26,9 +26,45 @@ The reserved workstream was initialized. Transitioned from single-stream mode on
 
 ## Planned Next Step
 
-None recorded. The prototype comparison is over: `claude-rocada-site/` is the club's site, published through GitHub Pages at https://webtest.smartgalati.ro/. The next step is whatever the club asks for next (content updates go through `claude-rocada-site/content/`).
+Finish the two-step publishing setup (see the latest slice): the owner makes
+this repository public or moves the organization to a plan with Pages for
+private repositories, enables Pages (Source: GitHub Actions), and moves the
+test domain `webtest.smartgalati.ro` here (remove it from
+`Luciangl/devcapsule-chessclub-website`, point its `CNAME` at
+`smartgalati.github.io`, set it as this repository's custom domain, enforce
+HTTPS). Then run the Pages workflow and confirm that it publishes the test
+site and creates a `website-candidate-*` release, and promote that candidate
+from the production repository once it exists.
 
-## Latest Delivered Slice (2026-11-20): repository reduced to the Rocada site
+## Latest Delivered Slice (2026-11-20): new home and two-step publishing
+
+- This repository, `smartgalati/devcapsule-www-smartgalati-ro`, started as a
+  single commit: the tree of `Luciangl/devcapsule-chessclub-website` at
+  `518a48f`, without its history. Slices below this one happened in that
+  repository or in `ccozianu/devcapsule-chessclub-website` before it.
+- Added step one of the owner's two-step publishing (change and publish to
+  test, then publish to production), modelled on
+  `mycodespace-ai/devcapsule` and `mycodespace-ai/devcapsule-website`: the
+  Pages workflow gained a `candidate` job that saves the deployed files as a
+  `website-candidate-<run>-<attempt>` prerelease
+  (`claude-rocada-site/scripts/candidate.mjs`, four unit tests). Guide:
+  `docs/publishing.md`.
+- Step two, the production repository (publish workflow, promotion script,
+  eight unit tests, README), is written and tested locally but not pushed:
+  the repository does not exist yet and its name and domain are the owner's
+  to choose.
+- Validation: `npm test` in `claude-rocada-site/` 14/14; pack then promote
+  run locally on the real built site (569 files, 291 pages, 582 address
+  references rewritten, no broken local link). Not yet run on GitHub: Pages
+  cannot be enabled while this repository is private on the free plan
+  (API answer: "Your current plan does not support GitHub Pages for this
+  repository").
+- Gap noted: `.devcapsule/devcapsule.toml` still names the project
+  `chessclub-website` with mount `/workspace/chessclub-website`, and the
+  coordination branch of the multiple-streams workflow does not exist in
+  this repository yet; left for the owner's first session here.
+
+## Earlier Slice (2026-11-20): repository reduced to the Rocada site
 
 - This repository (`Luciangl/devcapsule-chessclub-website`) is the club's own
   and from this slice on is maintained separately from the

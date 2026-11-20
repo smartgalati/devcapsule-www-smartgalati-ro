@@ -1,5 +1,7 @@
 name: Rocada site (GitHub Pages)
-# Builds claude-rocada-site for this repository's GitHub Pages site and publishes it.
+# Builds claude-rocada-site, publishes it to this repository's GitHub Pages site (the TEST site),
+# then saves the exact published files as a "website candidate" release that the production
+# repository can promote. See docs/publishing.md for the two-step flow.
 # One-time setup: Settings → Pages → Build and deployment → Source: "GitHub Actions"
 # (and an eligible plan while the repository is private). See docs/github-pages-deployment.md.
 on:
@@ -17,6 +19,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      origin: ${{ steps.pages.outputs.origin }}
+      base_path: ${{ steps.pages.outputs.base_path }}
     defaults:
       run:
         working-directory: claude-rocada-site
@@ -46,6 +51,13 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: claude-rocada-site/dist
+      # The same files again as a plain artifact, for the candidate job below.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: website-candidate-files
+          path: claude-rocada-site/dist
+          include-hidden-files: true
+          retention-days: 7
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -55,3 +67,46 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+  candidate:
+    # Only a root-path build (custom domain, empty base path) can be promoted: promotion swaps
+    # the origin and nothing else. Under the github.io project path this job is skipped.
+    if: needs.build.outputs.base_path == ''
+    needs: [build, deploy]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/download-artifact@v4
+        with:
+          name: website-candidate-files
+          path: candidate-site
+      - name: Package the exact deployed files
+        env:
+          CANDIDATE_TAG: website-candidate-${{ github.run_id }}-${{ github.run_attempt }}
+          CANDIDATE_ORIGIN: ${{ needs.build.outputs.origin }}
+        run: node claude-rocada-site/scripts/candidate.mjs pack candidate-site candidate-bundle
+      - name: Publish the website candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          CANDIDATE_TAG: website-candidate-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          # Draft until both assets are uploaded; a tag is never overwritten.
+          gh release create "$CANDIDATE_TAG" candidate-bundle/website.tar.gz candidate-bundle/candidate.json \
+            --draft --prerelease --latest=false --target "$GITHUB_SHA" \
+            --title "Website candidate $CANDIDATE_TAG" \
+            --notes-file candidate-bundle/release-notes.txt
+          gh release edit "$CANDIDATE_TAG" --draft=false --prerelease --latest=false
+          {
+            echo "Test site: ${{ needs.build.outputs.origin }}/"
+            echo
+            echo "Candidate tag: \`$CANDIDATE_TAG\`"
+            echo
+            echo "https://github.com/$GH_REPO/releases/tag/$CANDIDATE_TAG"
+          } >> "$GITHUB_STEP_SUMMARY"

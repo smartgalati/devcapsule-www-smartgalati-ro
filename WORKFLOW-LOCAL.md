@@ -59,10 +59,13 @@ deployment: `curl --fail --silent --location https://webtest.smartgalati.ro/`.
 documentation or workflow files only has no runtime gate; check the Markdown
 links it adds and `git diff --check`.
 
-**Candidate gate and acceptance evidence.** None: the project cuts no
-releases. Every push to `main` under `claude-rocada-site/` is published by
-the Pages workflow only after its unit, browser and palette checks pass; the
-workflow run is the evidence.
+**Candidate gate and acceptance evidence.** Every push to `main` under
+`claude-rocada-site/` is published to the test site by the Pages workflow
+only after its unit, browser and palette checks pass, and is then saved as a
+`website-candidate-<run>-<attempt>` release: that run is the candidate gate.
+Acceptance is the human review of the test site; the evidence is the
+production repository's publish run for that candidate tag and
+`/build-info.json` on the production site. See `docs/publishing.md`.
 
 ## Host Capabilities
 

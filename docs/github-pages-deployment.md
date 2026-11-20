@@ -6,7 +6,7 @@ kept. The Pages build only differs from the plain root-path build by the
 address compiled into it. (The Google Cloud Storage and Firebase scripts that
 served the earlier previews were removed on 2026-11-20.)
 
-Address: **`https://ccozianu.github.io/devcapsule-chessclub-website/`** for the
+Address: **`https://smartgalati.github.io/devcapsule-www-smartgalati-ro/`** for the
 repository as it is named today. The owner and repository name are read at
 build time, so a rename or a fork changes the address without a code change.
 
@@ -33,8 +33,8 @@ build time, so a rename or a fork changes the address without a code change.
 ## What the workflow does
 
 - `actions/configure-pages` reads the site's address from the Pages settings
-  and exposes it as an origin (`https://ccozianu.github.io`) and a base path
-  (`/devcapsule-chessclub-website`). With a custom domain configured in the
+  and exposes it as an origin (`https://smartgalati.github.io`) and a base path
+  (`/devcapsule-www-smartgalati-ro`). With a custom domain configured in the
   Pages settings the origin becomes that domain and the base path is empty.
 - `npm run pages:build` passes both to Astro as `site` and `base`
   (`ROCADA_SITE`, `ROCADA_BASE` in `astro.config.mjs`). Canonical and
@@ -86,13 +86,14 @@ missing. `scripts/pages.sh` derives the address from the `origin` remote when
 
 ## Custom domain (optional)
 
-In *Settings → Pages → Custom domain* enter e.g.
-`smartgalati-pages.mycodespace.ai`, and add a DNS `CNAME` record for that name
-pointing at `ccozianu.github.io` in the `mycodespace.ai` zone (Cloud DNS
-project `central-trees-497510-h7`, zone `mycodespace`). GitHub verifies the
+In *Settings → Pages → Custom domain* enter the test domain, e.g.
+`webtest.smartgalati.ro`, and add a DNS `CNAME` record for that name
+pointing at `smartgalati.github.io` in the domain's zone. GitHub verifies the
 record, provisions HTTPS, and `configure-pages` then reports the domain as the
 origin with an empty base path on the next run, so the site rebuilds at the
 root automatically. No `CNAME` file is needed when publishing from Actions.
+A custom domain is also what makes the published site a promotable candidate;
+see [the publishing guide](publishing.md).
 
 ## Limits and behaviour to know
 
@@ -104,7 +105,7 @@ root automatically. No `CNAME` file is needed when publishing from Actions.
 - GitHub Pages sets its own cache headers (roughly ten minutes); there is no
   per-path cache control or URL map, unlike the GCS deployment.
 - A project site's `robots.txt` lives under the base path, where crawlers do
-  not look; the account-level `ccozianu.github.io/robots.txt` would govern.
+  not look; the account-level `smartgalati.github.io/robots.txt` would govern.
 - Pages has no deploy-time hook into the two-year archive boundary: like the
   other hosts, the boundary advances only when the site is rebuilt. Pushing
   any change, or running the workflow manually, rebuilds it.

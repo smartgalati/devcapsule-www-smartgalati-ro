@@ -1,0 +1,67 @@
+---
+import { withBase } from '../lib/url';
+import { getEntry, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import ContactReveal from '../components/ContactReveal.astro';
+import SourceNote from '../components/SourceNote.astro';
+import { site } from '../config/site';
+import { t } from '../i18n';
+const page = (await getEntry('pages', 'contact'))!;
+const { Content } = await render(page);
+const s = t();
+---
+
+<Base title={page.data.title} description={page.data.description}>
+  <PageHead title={page.data.title} subtitle={page.data.subtitle} />
+  <section class="section">
+    <div class="wrap contact">
+      <div class="prose">
+        <h2>Vorbește direct cu clubul</h2>
+        <p>Apasă un buton pentru a afișa numărul de telefon sau adresa de e-mail.</p>
+        <ContactReveal />
+        <Content />
+        <SourceNote url={page.data.source_url} />
+      </div>
+      <aside class="contact__aside">
+        <div class="note contact__form">
+          <h2>{s.contact.formTitle}</h2>
+          <p>{s.contact.formText}</p>
+          <a class="btn" href={site.enrollmentUrl} rel="noopener">{s.contact.formCta} ↗</a>
+          <p class="contact__small">Dacă formularul nu se deschide, folosește telefonul sau e-mailul de mai sus.</p>
+        </div>
+        <div class="note">
+          <h2>{s.nav.support}</h2>
+          <p>Redirecționează 3,5% din impozitul pe venit către asociație — nu te costă nimic.</p>
+          <a class="btn btn--ghost" href={withBase('/sustine/')}>{s.home.supportCta}</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact {
+    display: grid;
+    gap: var(--s-7);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    align-items: start;
+  }
+  .contact__aside {
+    display: grid;
+    gap: var(--s-5);
+    position: sticky;
+    top: var(--s-4);
+  }
+  .contact__aside h2 {
+    font-size: var(--fs-xl);
+  }
+  .contact__form {
+    border-left-color: var(--c-primary);
+  }
+  .contact__small {
+    font-size: var(--fs-sm);
+    color: var(--c-text-2);
+    margin-top: var(--s-3);
+  }
+</style>

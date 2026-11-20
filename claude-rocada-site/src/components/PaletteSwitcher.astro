@@ -1,0 +1,50 @@
+---
+/**
+ * Labeled native <select>. Rendered twice (desktop band and mobile menu);
+ * all instances stay in sync through the shared script in Base.astro.
+ */
+import { palettes, defaultPalette } from '../lib/palettes';
+import { t } from '../i18n';
+interface Props {
+  id: string;
+  tone?: 'band' | 'surface';
+}
+const { id, tone = 'surface' } = Astro.props;
+const s = t();
+---
+
+<div class:list={['palette', `palette--${tone}`]}>
+  <label for={id}>{s.paletteLabel}</label>
+  <select id={id} data-palette-select>
+    {palettes.map((p) => <option value={p.id} selected={p.id === defaultPalette}>{p.label}</option>)}
+  </select>
+</div>
+
+<style>
+  .palette {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-strong);
+  }
+  select {
+    font: inherit;
+    font-size: var(--fs-sm);
+    min-height: 2.5rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--c-border-strong);
+    background: var(--c-surface);
+    color: var(--c-text);
+    max-width: 100%;
+  }
+  .palette--band {
+    color: var(--c-band-text);
+  }
+  .palette--band select {
+    background: var(--c-band-2);
+    color: var(--c-band-text);
+    border-color: var(--c-band-muted);
+  }
+</style>

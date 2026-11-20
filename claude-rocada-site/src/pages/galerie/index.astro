@@ -1,0 +1,58 @@
+---
+import { withBase } from '../../lib/url';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import { photo } from '../../lib/images';
+import { t } from '../../i18n';
+const s = t();
+const albums = (await getCollection('galleries')).sort((a, b) => b.data.year - a.data.year);
+---
+
+<Base title={s.gallery.title} description={s.gallery.intro}>
+  <PageHead title={s.gallery.title} subtitle={s.gallery.intro} />
+  <section class="section">
+    <div class="wrap">
+      <div class="grid grid--wide">
+        {albums.map((g) => {
+          const external = !g.data.photos.length && g.data.album_url;
+          const href = external ? g.data.album_url! : withBase(`/galerie/${g.id}/`);
+          return (
+            <article class="card card--link">
+              <Image src={photo(g.data.cover_image)!} alt="" width={720} height={540} loading="lazy" class="cover" />
+              <div class="card__body">
+                <p class="meta"><span class="chip">{g.data.year}</span>{g.data.location && <span>{g.data.location}</span>}<span>{external ? s.gallery.external : s.gallery.photos(g.data.photos.length)}</span></p>
+                <h2><a href={href} rel={external ? 'noopener' : undefined}>{g.data.title}{external ? ' ↗' : ''}</a></h2>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .cover {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  h2 {
+    font-size: var(--fs-xl);
+    margin: 0;
+  }
+  h2 a {
+    color: inherit;
+    text-decoration: none;
+  }
+  h2 a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  h2 a:hover {
+    text-decoration: underline;
+  }
+</style>

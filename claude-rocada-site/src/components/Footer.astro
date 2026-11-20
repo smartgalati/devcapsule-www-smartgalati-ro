@@ -1,0 +1,100 @@
+---
+import { withBase } from '../lib/url';
+import { site } from '../config/site';
+import { t } from '../i18n';
+const s = t();
+const year = new Date().getUTCFullYear();
+---
+
+<footer class="footer on-band">
+  <div class="wrap footer__grid">
+    <div>
+      <p class="footer__brand">♜ {site.name}</p>
+      <p class="footer__text">{site.legalName}, Galați, România. Club de șah fondat în 2014.</p>
+      <p class="footer__text">
+        <a href={site.originalSite} rel="noopener">{s.footer.original}</a>
+      </p>
+    </div>
+    <div>
+      <p class="footer__title">{s.footer.quickLinks}</p>
+      <ul class="footer__list">
+        <li><a href={withBase('/despre-noi/')}>{s.nav.about}</a></li>
+        <li><a href={withBase('/antrenori/')}>{s.nav.coaches}</a></li>
+        <li><a href={withBase('/echipe/')}>{s.nav.teams}</a></li>
+        <li><a href={withBase('/performante/')}>{s.nav.performances}</a></li>
+        <li><a href={withBase('/noutati/')}>{s.nav.news}</a></li>
+        <li><a href={withBase('/arhiva/')}>{s.nav.archive}</a></li>
+        <li><a href={withBase('/galerie/')}>{s.nav.gallery}</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer__title">{s.footer.legal}</p>
+      <ul class="footer__list">
+        <li><a href={withBase('/inscrieri/')}>{s.nav.enroll}</a></li>
+        <li><a href={withBase('/sustine/')}>{s.nav.support}</a></li>
+        <li><a href={withBase('/contact/')}>{s.nav.contact}</a></li>
+        <li><a href={withBase('/sah-online/')}>{s.nav.chess}</a></li>
+        <li><a href={withBase('/licenses/palettes.txt')}>{s.footer.licenses}</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap footer__bottom">
+    <p>© {year} {site.legalName}. Textele și fotografiile provin din publicațiile clubului.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: auto;
+    background: var(--c-band);
+    color: var(--c-band-text);
+    padding-block: var(--s-7) var(--s-5);
+    font-size: var(--fs-sm);
+  }
+  .footer a {
+    color: var(--c-band-text);
+  }
+  .footer__grid {
+    display: grid;
+    gap: var(--s-6);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+  .footer__brand {
+    font-family: var(--font-display);
+    font-size: var(--fs-xl);
+    font-weight: 700;
+    margin-bottom: var(--s-3);
+  }
+  .footer__text {
+    color: var(--c-band-muted);
+    max-width: 40ch;
+  }
+  .footer__title {
+    font-weight: var(--fw-strong);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: var(--fs-xs);
+    color: var(--c-band-accent);
+    margin-bottom: var(--s-3);
+  }
+  .footer__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--s-2);
+  }
+  .footer__list a {
+    display: inline-block;
+    padding-block: 0.2rem;
+  }
+  .footer__bottom {
+    margin-top: var(--s-6);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-band-2);
+    color: var(--c-band-muted);
+  }
+  .footer__bottom p {
+    margin: 0;
+  }
+</style>

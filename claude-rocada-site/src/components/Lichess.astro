@@ -1,0 +1,50 @@
+---
+/** Lichess game embed with a direct-link fallback; the page never depends on it loading. */
+import { site } from '../config/site';
+import { t } from '../i18n';
+const s = t();
+const id = site.lichess.gameId;
+const embed = `https://lichess.org/embed/game/${id}?theme=brown&bg=auto`;
+const direct = `https://lichess.org/${id}`;
+---
+
+<div class="lichess">
+  <iframe
+    src={embed}
+    title="Partidă de șah pe Lichess"
+    loading="lazy"
+    allow="fullscreen"
+    referrerpolicy="no-referrer"
+    data-lichess-frame
+  ></iframe>
+  <p class="lichess__fallback">
+    <a class="btn btn--ghost" href={direct} target="_blank" rel="noopener noreferrer">{s.chess.fallback} ↗</a>
+    <span class="lichess__note">{s.chess.note}</span>
+  </p>
+</div>
+
+<style>
+  .lichess {
+    display: grid;
+    gap: var(--s-4);
+  }
+  iframe {
+    width: 100%;
+    aspect-ratio: 5 / 4;
+    min-height: 26rem;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md);
+    background: var(--c-surface-2);
+  }
+  .lichess__fallback {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3) var(--s-4);
+    margin: 0;
+  }
+  .lichess__note {
+    font-size: var(--fs-sm);
+    color: var(--c-text-2);
+  }
+</style>

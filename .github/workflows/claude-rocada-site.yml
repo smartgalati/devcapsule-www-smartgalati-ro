@@ -1,0 +1,41 @@
+name: Rocada site (build and tests)
+on:
+  push:
+    paths: ['claude-rocada-site/**', '.github/workflows/claude-rocada-site.yml']
+  pull_request:
+    paths: ['claude-rocada-site/**', '.github/workflows/claude-rocada-site.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: rocada-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: claude-rocada-site
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: claude-rocada-site/package-lock.json
+      - run: npm ci
+      - run: npm test && npm run test:contrast && npm run build
+      - run: npx playwright install --with-deps chromium
+      - name: Browser, palette and accessibility checks
+        run: |
+          npm run preview > /tmp/rocada-preview.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://localhost:4326/ > /dev/null; then break; fi
+            sleep 1
+          done
+          npm run test:browser
+          npm run test:themes
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rocada-static-site
+          path: claude-rocada-site/dist

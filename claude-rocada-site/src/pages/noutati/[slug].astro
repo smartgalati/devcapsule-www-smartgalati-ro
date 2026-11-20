@@ -1,0 +1,41 @@
+---
+import { withBase } from '../../lib/url';
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Article from '../../components/Article.astro';
+import { site } from '../../config/site';
+import { isArchived, newsSlug } from '../../lib/archive.mjs';
+import { t } from '../../i18n';
+
+export async function getStaticPaths() {
+  const now = new Date();
+  const news = await getCollection('news');
+  // Current articles render here; archived ones get a small redirect stub at the
+  // old address so links that predate the move still land on the article.
+  return news.map((entry) => ({
+    params: { slug: newsSlug(entry.id) },
+    props: { entry, archived: isArchived(entry.data.date, now, site.archiveYears) },
+  }));
+}
+const { entry, archived } = Astro.props;
+const s = t();
+const year = entry.data.date.getUTCFullYear();
+const target = withBase(`/arhiva/${year}/${newsSlug(entry.id)}/`);
+---
+
+{archived ? (
+  <Base title={entry.data.title} description={entry.data.summary}>
+    <Fragment slot="head"><meta http-equiv="refresh" content={`0; url=${target}`} /></Fragment>
+    <section class="section">
+      <div class="wrap wrap--prose">
+        <h1>{entry.data.title}</h1>
+        <p class="lead">{s.news.movedNote(year)}</p>
+        <p><a class="btn" href={target}>{s.news.readMore} →</a></p>
+      </div>
+    </section>
+  </Base>
+) : (
+  <Base title={entry.data.title} description={entry.data.summary}>
+    <Article entry={entry} archived={false} />
+  </Base>
+)}

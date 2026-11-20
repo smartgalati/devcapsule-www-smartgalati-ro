@@ -1,0 +1,36 @@
+---
+import { withBase } from '../../../lib/url';
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import PageHead from '../../../components/PageHead.astro';
+import NewsCard from '../../../components/NewsCard.astro';
+import { site } from '../../../config/site';
+import { isArchived } from '../../../lib/archive.mjs';
+import { t } from '../../../i18n';
+
+export async function getStaticPaths() {
+  const now = new Date();
+  const archived = (await getCollection('news')).filter((n) => isArchived(n.data.date, now, site.archiveYears));
+  const years = [...new Set(archived.map((n) => n.data.date.getUTCFullYear()))];
+  return years.map((year) => ({
+    params: { year: String(year) },
+    props: { year, entries: archived.filter((n) => n.data.date.getUTCFullYear() === year).sort((a, b) => b.data.date.getTime() - a.data.date.getTime()) },
+  }));
+}
+const { year, entries } = Astro.props;
+const s = t();
+const now = new Date();
+---
+
+<Base title={s.archive.year(year)} description={`${s.archive.year(year)}: ${s.archive.count(entries.length)} din istoria clubului.`}>
+  <PageHead title={s.archive.year(year)} subtitle={s.archive.count(entries.length)} eyebrow={s.archive.title}>
+    <p class="meta"><a href={withBase('/arhiva/')}>← {s.archive.title}</a></p>
+  </PageHead>
+  <section class="section">
+    <div class="wrap">
+      <div class="grid grid--wide">
+        {entries.map((n) => <NewsCard entry={n} now={now} heading="h2" />)}
+      </div>
+    </div>
+  </section>
+</Base>

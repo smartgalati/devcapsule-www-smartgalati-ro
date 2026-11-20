@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import Article from '../../../components/Article.astro';
+import { site } from '../../../config/site';
+import { isArchived, newsSlug } from '../../../lib/archive.mjs';
+
+export async function getStaticPaths() {
+  const now = new Date();
+  const archived = (await getCollection('news')).filter((n) => isArchived(n.data.date, now, site.archiveYears));
+  return archived.map((entry) => ({
+    params: { year: String(entry.data.date.getUTCFullYear()), slug: newsSlug(entry.id) },
+    props: { entry },
+  }));
+}
+const { entry } = Astro.props;
+---
+
+<Base title={entry.data.title} description={entry.data.summary}>
+  <Article entry={entry} archived={true} />
+</Base>

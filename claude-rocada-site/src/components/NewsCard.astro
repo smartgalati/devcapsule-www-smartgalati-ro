@@ -1,0 +1,56 @@
+---
+import { withBase } from '../lib/url';
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { newsPath } from '../lib/archive.mjs';
+import { newsCover } from '../lib/images';
+import { formatDate, t } from '../i18n';
+interface Props {
+  entry: CollectionEntry<'news'>;
+  now: Date;
+  heading?: 'h2' | 'h3';
+}
+const { entry, now, heading = 'h3' } = Astro.props;
+const s = t();
+const href = withBase(newsPath(entry.id, entry.data.date, now));
+const cover = newsCover(entry.data.cover_image);
+const H = heading;
+---
+
+<article class="card card--link news-card">
+  {cover && (
+    <Image class="news-card__img" src={cover} alt="" width={720} height={480} loading="lazy" densities={[1, 1.5]} />
+  )}
+  <div class="card__body">
+    <p class="meta">
+      <time datetime={entry.data.date.toISOString().slice(0, 10)}>{formatDate(entry.data.date)}</time>
+      {entry.data.tags.slice(0, 2).map((tag) => <span class="chip chip--muted">{tag}</span>)}
+    </p>
+    <H><a href={href}>{entry.data.title}</a></H>
+    <p class="news-card__summary">{entry.data.summary}</p>
+    <p class="news-card__more" aria-hidden="true">{s.news.readMore} →</p>
+  </div>
+</article>
+
+<style>
+  .news-card__img {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+  .news-card__summary {
+    color: var(--c-text-2);
+    font-size: var(--fs-sm);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .news-card__more {
+    margin: auto 0 0;
+    font-weight: var(--fw-strong);
+    color: var(--c-link);
+    font-size: var(--fs-sm);
+  }
+</style>

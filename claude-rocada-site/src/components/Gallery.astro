@@ -1,0 +1,211 @@
+---
+/**
+ * Thumbnail grid + accessible lightbox (<dialog>). Without JavaScript each
+ * thumbnail is a plain link to the large image, so the gallery stays usable.
+ */
+import { Image, getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { t } from '../i18n';
+interface Props {
+  photos: { src: ImageMetadata; alt: string }[];
+  title: string;
+}
+const { photos, title } = Astro.props;
+const s = t();
+const large = await Promise.all(
+  photos.map((p) => getImage({ src: p.src, width: 1600, format: 'webp', quality: 82 })),
+);
+---
+
+<ul class="gallery" data-gallery aria-label={title}>
+  {photos.map((p, i) => (
+    <li>
+      <a
+        class="gallery__thumb"
+        href={large[i]!.src}
+        data-gallery-item
+        data-index={i}
+        data-alt={p.alt}
+        aria-label={`${p.alt} — ${s.gallery.openFull}`}
+      >
+        <Image src={p.src} alt="" width={480} height={360} loading={i < 8 ? 'eager' : 'lazy'} densities={[1, 2]} />
+      </a>
+    </li>
+  ))}
+</ul>
+
+<dialog class="lightbox" data-lightbox aria-label={title}>
+  <div class="lightbox__bar">
+    <p class="lightbox__counter" data-lightbox-counter aria-live="polite"></p>
+    <button class="lightbox__btn" type="button" data-lightbox-close aria-label={s.gallery.close}>✕ <span>{s.gallery.close}</span></button>
+  </div>
+  <figure class="lightbox__figure">
+    <img class="lightbox__img" data-lightbox-img alt="" />
+    <figcaption class="lightbox__caption" data-lightbox-caption></figcaption>
+  </figure>
+  <div class="lightbox__nav">
+    <button class="lightbox__btn" type="button" data-lightbox-prev aria-label={s.gallery.prev}>← <span>{s.gallery.prev}</span></button>
+    <a class="lightbox__btn lightbox__link" data-lightbox-open target="_blank" rel="noopener">{s.gallery.openFull}</a>
+    <button class="lightbox__btn" type="button" data-lightbox-next aria-label={s.gallery.next}><span>{s.gallery.next}</span> →</button>
+  </div>
+</dialog>
+
+<style>
+  .gallery {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+  }
+  .gallery__thumb {
+    display: block;
+    border-radius: var(--r-md);
+    overflow: hidden;
+    border: 1px solid var(--c-border);
+    background: var(--c-surface-2);
+  }
+  .gallery__thumb img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    transition: transform 0.25s var(--ease);
+  }
+  .gallery__thumb:hover img {
+    transform: scale(1.03);
+  }
+  .lightbox {
+    border: 0;
+    padding: 0;
+    width: min(100vw, 100%);
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    background: #0f1420;
+    color: #f6f1e7;
+    display: none;
+    flex-direction: column;
+  }
+  .lightbox[open] {
+    display: flex;
+  }
+  .lightbox::backdrop {
+    background: rgba(0, 0, 0, 0.85);
+  }
+  .lightbox__bar,
+  .lightbox__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-4);
+    flex-wrap: wrap;
+  }
+  .lightbox__counter {
+    margin: 0;
+    font-weight: 700;
+  }
+  .lightbox__btn {
+    min-height: var(--tap);
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    border: 2px solid #f6f1e7;
+    background: transparent;
+    color: #f6f1e7;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .lightbox__btn:hover {
+    background: #f6f1e7;
+    color: #0f1420;
+  }
+  .lightbox__btn:focus-visible {
+    outline-color: #f2b25a;
+  }
+  .lightbox__figure {
+    flex: 1;
+    min-height: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-2);
+    padding: 0 var(--s-4);
+  }
+  .lightbox__img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    flex: 1;
+    min-height: 0;
+  }
+  .lightbox__caption {
+    font-size: var(--fs-sm);
+    text-align: center;
+  }
+  @media (max-width: 40rem) {
+    .lightbox__btn span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+    }
+    .lightbox__link {
+      order: 3;
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+  const items = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-gallery-item]'));
+  if (dialog && items.length && typeof dialog.showModal === 'function') {
+    const img = dialog.querySelector<HTMLImageElement>('[data-lightbox-img]')!;
+    const caption = dialog.querySelector<HTMLElement>('[data-lightbox-caption]')!;
+    const counter = dialog.querySelector<HTMLElement>('[data-lightbox-counter]')!;
+    const openLink = dialog.querySelector<HTMLAnchorElement>('[data-lightbox-open]')!;
+    let index = 0;
+    let opener: HTMLElement | null = null;
+    const show = (i: number) => {
+      index = (i + items.length) % items.length;
+      const item = items[index]!;
+      img.src = item.href;
+      img.alt = item.dataset.alt || '';
+      caption.textContent = item.dataset.alt || '';
+      counter.textContent = `Fotografia ${index + 1} din ${items.length}`;
+      openLink.href = item.href;
+    };
+    items.forEach((item, i) =>
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        opener = item;
+        show(i);
+        dialog.showModal();
+        dialog.querySelector<HTMLElement>('[data-lightbox-close]')?.focus();
+      }),
+    );
+    dialog.querySelector('[data-lightbox-close]')!.addEventListener('click', () => dialog.close());
+    dialog.querySelector('[data-lightbox-prev]')!.addEventListener('click', () => show(index - 1));
+    dialog.querySelector('[data-lightbox-next]')!.addEventListener('click', () => show(index + 1));
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(index - 1);
+      if (e.key === 'ArrowRight') show(index + 1);
+    });
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+    dialog.addEventListener('close', () => {
+      img.removeAttribute('src');
+      opener?.focus();
+    });
+  }
+</script>

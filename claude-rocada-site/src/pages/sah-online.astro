@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import Lichess from '../components/Lichess.astro';
+import { t } from '../i18n';
+const s = t();
+---
+
+<Base title={s.chess.title} description={s.chess.intro}>
+  <PageHead title={s.chess.title} subtitle={s.chess.intro} />
+  <section class="section">
+    <div class="wrap chess">
+      <div>
+        <h2>Partidă demonstrativă</h2>
+        <Lichess />
+      </div>
+      <div class="prose">
+        <h2>Antrenează-te acasă</h2>
+        <p>Antrenorii recomandă exerciții zilnice scurte între ședințele de la club. Resurse gratuite:</p>
+        <ul>
+          <li><a href="https://lichess.org/training" rel="noopener noreferrer" target="_blank">Probleme tactice pe Lichess ↗</a></li>
+          <li><a href="https://lichess.org/learn" rel="noopener noreferrer" target="_blank">Învață regulile și mutările pieselor ↗</a></li>
+          <li><a href="https://lichess.org/practice" rel="noopener noreferrer" target="_blank">Exerciții de finaluri ↗</a></li>
+        </ul>
+        <p class="note">Site-ul clubului nu depinde de aceste servicii: tabla de mai sus este un element opțional, furnizat de lichess.org. Studiile și partidele clubului pot fi adăugate în articole prin câmpul <code>lichess_url</code>.</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .chess {
+    display: grid;
+    gap: var(--s-7);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    align-items: start;
+  }
+</style>

@@ -1,0 +1,37 @@
+---
+import { withBase } from '../../lib/url';
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import NewsCard from '../../components/NewsCard.astro';
+import { site } from '../../config/site';
+import { isArchived, cutoffTimestamp } from '../../lib/archive.mjs';
+import { formatDate, t } from '../../i18n';
+const s = t();
+const now = new Date();
+const news = (await getCollection('news'))
+  .filter((n) => !isArchived(n.data.date, now, site.archiveYears))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const cutoff = new Date(cutoffTimestamp(now, site.archiveYears));
+---
+
+<Base title={s.news.title} description={s.news.intro}>
+  <PageHead title={s.news.title} subtitle={s.news.intro} />
+  <section class="section">
+    <div class="wrap">
+      <div class="grid grid--wide">
+        {news.map((n) => <NewsCard entry={n} now={now} heading="h2" />)}
+      </div>
+      <p class="note archive-note">
+        Articolele publicate înainte de {formatDate(cutoff)} se află în <a href={withBase('/arhiva/')}>arhivă</a>. Limita avansează la fiecare republicare a site-ului.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .archive-note {
+    margin-top: var(--s-7);
+    max-width: var(--w-prose);
+  }
+</style>

@@ -1,0 +1,57 @@
+name: Rocada site (GitHub Pages)
+# Builds claude-rocada-site for this repository's GitHub Pages site and publishes it.
+# One-time setup: Settings → Pages → Build and deployment → Source: "GitHub Actions"
+# (and an eligible plan while the repository is private). See docs/github-pages-deployment.md.
+on:
+  push:
+    branches: [main]
+    paths: ['claude-rocada-site/**', '.github/workflows/claude-rocada-pages.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: rocada-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: claude-rocada-site
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: claude-rocada-site/package-lock.json
+      - name: Read the Pages address (fails here until Pages is enabled for the repository)
+        id: pages
+        uses: actions/configure-pages@v5
+      - run: npm ci
+      - run: npm test && npm run test:contrast
+      - name: Build for ${{ steps.pages.outputs.base_url }}
+        env:
+          PAGES_SITE_URL: ${{ steps.pages.outputs.origin }}
+          PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: npm run pages:build
+      - run: npx playwright install --with-deps chromium
+      - name: Browser, palette and accessibility checks under the Pages base path
+        env:
+          PAGES_SITE_URL: ${{ steps.pages.outputs.origin }}
+          PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: npm run pages:check
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: claude-rocada-site/dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

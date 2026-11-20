@@ -1,0 +1,76 @@
+---
+import { withBase } from '../lib/url';
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+import { newsCover } from '../lib/images';
+import { formatDate, t } from '../i18n';
+interface Props {
+  entry: CollectionEntry<'news'>;
+  archived: boolean;
+}
+const { entry, archived } = Astro.props;
+const { Content } = await render(entry);
+const s = t();
+const cover = newsCover(entry.data.cover_image);
+const year = entry.data.date.getUTCFullYear();
+const back = archived ? { href: withBase(`/arhiva/${year}/`), label: `← ${s.archive.year(year)}` } : { href: withBase('/noutati/'), label: `← ${s.news.back}` };
+---
+
+<article class="article">
+  <header class="page-head">
+    <div class="wrap wrap--prose">
+      <p class="meta">
+        <a href={back.href}>{back.label}</a>
+        {archived && <span class="chip">{s.news.archived}</span>}
+      </p>
+      <h1>{entry.data.title}</h1>
+      <p class="meta">
+        <time datetime={entry.data.date.toISOString().slice(0, 10)}>{formatDate(entry.data.date)}</time>
+        {entry.data.tags.map((tag) => <span class="chip chip--muted">{tag}</span>)}
+      </p>
+    </div>
+  </header>
+  <div class="section">
+    <div class="wrap wrap--prose">
+      {cover && <Image class="article__cover" src={cover} alt="" width={1200} height={800} loading="eager" densities={[1, 1.5]} />}
+      <div class="prose article__body">
+        <Content />
+      </div>
+      {(entry.data.album_url || entry.data.lichess_url || entry.data.source_url) && (
+        <aside class="note article__links">
+          <ul>
+            {entry.data.album_url && <li><a href={entry.data.album_url} rel="noopener">{s.news.album} ↗</a></li>}
+            {entry.data.lichess_url && <li><a href={entry.data.lichess_url} rel="noopener">{s.news.lichess} ↗</a></li>}
+            {entry.data.source_url && (
+              <li>
+                <a href={entry.data.source_url} rel="noopener">{s.news.source} ↗</a>
+                {entry.data.source_photos ? <span class="article__small"> ({s.news.sourcePhotos(entry.data.source_photos)})</span> : null}
+              </li>
+            )}
+          </ul>
+        </aside>
+      )}
+    </div>
+  </div>
+</article>
+
+<style>
+  .article__cover {
+    width: 100%;
+    max-height: 32rem;
+    object-fit: cover;
+    border-radius: var(--r-lg);
+    margin-bottom: var(--s-6);
+  }
+  .article__links ul {
+    margin: 0;
+    padding-left: 1.2em;
+  }
+  .article__links {
+    margin-top: var(--s-6);
+  }
+  .article__small {
+    color: var(--c-text-2);
+  }
+</style>

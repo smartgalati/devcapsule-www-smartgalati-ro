@@ -1,0 +1,34 @@
+{
+  "name": "claude-rocada-site",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "ACS Smart Galați — independent 'Rocada' candidate (smartgalati-test4)",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "scripts": {
+    "dev": "astro dev --host 0.0.0.0 --port 4325",
+    "check": "astro check",
+    "build": "astro check && astro build",
+    "preview": "astro preview --host 0.0.0.0 --port 4326",
+    "test": "node --test tests/*.test.mjs",
+    "test:contrast": "node tests/contrast.mjs",
+    "test:browser": "node tests/browser.mjs",
+    "test:themes": "node tests/themes.mjs",
+    "pages:build": "bash scripts/pages.sh build",
+    "pages:check": "bash scripts/pages.sh check"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource/atkinson-hyperlegible": "^5.3.0",
+    "astro": "5.18.2",
+    "sharp": "^0.34.5",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
+    "@playwright/test": "1.63.0"
+  }
+}

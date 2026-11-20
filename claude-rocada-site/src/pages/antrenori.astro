@@ -1,0 +1,50 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import CoachCard from '../components/CoachCard.astro';
+import SourceNote from '../components/SourceNote.astro';
+import { t } from '../i18n';
+const s = t();
+const coaches = (await getCollection('coaches')).sort((a, b) => a.data.order - b.data.order);
+const rendered = await Promise.all(coaches.map((c) => render(c)));
+---
+
+<Base title={s.coaches.title} description={`${s.coaches.intro} ${coaches.map((c) => c.data.name).join(', ')}.`}>
+  <PageHead title={s.coaches.title} subtitle={s.coaches.intro} />
+  <section class="section">
+    <div class="wrap">
+      <div class="coaches">
+        {coaches.map((c, i) => {
+          const { Content } = rendered[i]!;
+          return (
+            <div class="coaches__item" id={c.id}>
+              <CoachCard coach={c}>
+                <div class="prose coaches__bio"><Content /></div>
+              </CoachCard>
+            </div>
+          );
+        })}
+      </div>
+      <SourceNote url="https://smartgalati.ro/instructorii-nostri/" label="Prezentările provin din pagina „Antrenori” a site-ului clubului" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .coaches {
+    display: grid;
+    gap: var(--s-6);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr));
+  }
+  .coaches__item {
+    scroll-margin-top: var(--s-6);
+  }
+  .coaches__bio {
+    font-size: var(--fs-sm);
+    color: var(--c-text-2);
+  }
+  .coaches__bio :global(p:last-child) {
+    margin-bottom: 0;
+  }
+</style>

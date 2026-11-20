@@ -1,0 +1,104 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { t } from '../i18n';
+const s = t();
+const items = (await getCollection('performances')).sort((a, b) => a.data.order - b.data.order);
+const rendered = await Promise.all(items.map((p) => render(p)));
+const years = [...new Set(items.map((p) => p.data.year))];
+---
+
+<Base title={s.performances.title} description={s.performances.intro}>
+  <PageHead title={s.performances.title} subtitle={s.performances.intro} />
+  <section class="section">
+    <div class="wrap">
+      <nav class="years" aria-label="Ani">
+        {years.map((y) => <a class="chip" href={`#an-${y}`}>{y}</a>)}
+      </nav>
+      <ol class="timeline">
+        {items.map((p, i) => {
+          const { Content } = rendered[i]!;
+          const first = items.findIndex((q) => q.data.year === p.data.year) === i;
+          return (
+            <li class="timeline__item" id={first ? `an-${p.data.year}` : undefined}>
+              <div class="timeline__year" aria-hidden={!first}>{first ? p.data.year : ''}</div>
+              <article class="card">
+                <div class="card__body">
+                  <p class="meta"><span class="chip">{p.data.result}</span><span>{p.data.category}</span>{!first && <span>{p.data.year}</span>}</p>
+                  <h2>{p.data.title}</h2>
+                  <div class="prose timeline__text"><Content /></div>
+                  {p.data.source_url && (
+                    <p class="timeline__source">{s.performances.source}: <a href={p.data.source_url} rel="noopener">{new URL(p.data.source_url).pathname === '/performante/' ? 'pagina Performanțe a clubului' : 'articolul clubului'}</a></p>
+                  )}
+                </div>
+              </article>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .years {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin-bottom: var(--s-6);
+  }
+  .years .chip {
+    min-height: 2.25rem;
+    display: inline-flex;
+    align-items: center;
+    font-size: var(--fs-sm);
+  }
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-5);
+  }
+  .timeline__item {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: var(--s-4);
+    scroll-margin-top: var(--s-5);
+  }
+  .timeline__year {
+    font-family: var(--font-display);
+    font-size: var(--fs-h3);
+    font-weight: 700;
+    color: var(--c-accent-text);
+    padding-top: var(--s-4);
+  }
+  .timeline__item h2 {
+    font-size: var(--fs-xl);
+    margin: 0;
+  }
+  .timeline__text {
+    color: var(--c-text-2);
+  }
+  .timeline__text :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .timeline__source {
+    font-size: var(--fs-sm);
+    color: var(--c-text-2);
+    margin: 0;
+  }
+  @media (max-width: 40rem) {
+    .timeline__item {
+      grid-template-columns: 1fr;
+      gap: var(--s-2);
+    }
+    .timeline__year {
+      padding-top: 0;
+    }
+    .timeline__year:empty {
+      display: none;
+    }
+  }
+</style>

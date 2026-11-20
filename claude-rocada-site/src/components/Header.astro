@@ -1,0 +1,370 @@
+---
+import { withBase, stripBase } from '../lib/url';
+import PaletteSwitcher from './PaletteSwitcher.astro';
+import { site } from '../config/site';
+import { t } from '../i18n';
+const s = t();
+const path = stripBase(Astro.url.pathname);
+const active = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+const club = [
+  { href: '/despre-noi/', label: s.nav.about },
+  { href: '/antrenori/', label: s.nav.coaches },
+  { href: '/echipe/', label: s.nav.teams },
+  { href: '/sportivi/', label: s.nav.players },
+  { href: '/performante/', label: s.nav.performances },
+];
+const primary = [
+  { href: '/noutati/', label: s.nav.news },
+  { href: '/galerie/', label: s.nav.gallery },
+  { href: '/arhiva/', label: s.nav.archive },
+  { href: '/sah-online/', label: s.nav.chess },
+  { href: '/sustine/', label: s.nav.support },
+  { href: '/contact/', label: s.nav.contact },
+];
+const clubActive = club.some((l) => active(l.href));
+---
+
+<header class="site-header on-band">
+  <div class="band">
+    <div class="wrap band__inner">
+      <p class="band__tag">{site.tagline}</p>
+      <div class="band__tools">
+        <div class="band__palette"><PaletteSwitcher id="palette-desktop" tone="band" /></div>
+        <a class="band__link" href={site.originalSite} rel="noopener">smartgalati.ro</a>
+      </div>
+    </div>
+  </div>
+  <div class="bar">
+    <div class="wrap bar__inner">
+      <a class="brand" href={withBase('/')} aria-label={`${site.name} — ${s.nav.home}`}>
+        <span class="brand__mark" aria-hidden="true">♜</span>
+        <span class="brand__text"><span class="brand__acs">ACS</span> Smart Galați</span>
+      </a>
+      <nav class="nav" aria-label="Principal">
+        <ul class="nav__list">
+          <li class="nav__item nav__item--menu" data-dropdown>
+            <button
+              class:list={['nav__link', 'nav__button', { 'is-active': clubActive }]}
+              type="button"
+              aria-expanded="false"
+              aria-controls="menu-club"
+              data-dropdown-button
+            >
+              {s.nav.club}
+              <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+            <ul class="dropdown" id="menu-club" data-dropdown-menu>
+              {club.map((l) => (
+                <li><a href={withBase(l.href)} aria-current={active(l.href) ? 'page' : undefined}>{l.label}</a></li>
+              ))}
+            </ul>
+          </li>
+          {primary.map((l) => (
+            <li class="nav__item">
+              <a class:list={['nav__link', { 'is-active': active(l.href) }]} href={withBase(l.href)} aria-current={active(l.href) ? 'page' : undefined}>{l.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <a class="btn btn--accent bar__cta" href={site.enrollmentUrl} rel="noopener">{s.nav.enroll}</a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
+        <span class="menu-toggle__icon" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span data-menu-label>{s.menu}</span>
+      </button>
+    </div>
+  </div>
+  <div class="mobile" id="mobile-menu" hidden data-mobile-menu>
+    <nav class="wrap" aria-label="Meniu mobil">
+      <p class="mobile__group">{s.nav.club}</p>
+      <ul class="mobile__list">
+        {club.map((l) => <li><a href={withBase(l.href)} aria-current={active(l.href) ? 'page' : undefined}>{l.label}</a></li>)}
+      </ul>
+      <ul class="mobile__list">
+        {primary.map((l) => <li><a href={withBase(l.href)} aria-current={active(l.href) ? 'page' : undefined}>{l.label}</a></li>)}
+      </ul>
+      <div class="mobile__tools">
+        <a class="btn btn--accent" href={site.enrollmentUrl} rel="noopener">{s.nav.enroll}</a>
+        <PaletteSwitcher id="palette-mobile" />
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: relative;
+    z-index: 20;
+  }
+  .bar :focus-visible,
+  .mobile :focus-visible {
+    outline-color: var(--c-focus);
+  }
+  .band {
+    background: var(--c-band);
+    color: var(--c-band-text);
+    font-size: var(--fs-sm);
+  }
+  .band__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-2) var(--s-4);
+    min-height: 3rem;
+    padding-block: var(--s-2);
+  }
+  .band__tag {
+    margin: 0;
+    font-weight: var(--fw-strong);
+    color: var(--c-band-muted);
+  }
+  .band__tools {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+  }
+  .band__link {
+    color: var(--c-band-text);
+    font-weight: var(--fw-strong);
+  }
+  .bar {
+    background: var(--c-surface);
+    border-bottom: 1px solid var(--c-border);
+  }
+  .bar__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+    min-height: 4.5rem;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    text-decoration: none;
+    color: var(--c-heading);
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 5.2vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1;
+    margin-right: auto;
+    white-space: nowrap;
+    min-width: 0;
+  }
+  .brand__mark {
+    font-size: 1.9rem;
+    color: var(--c-accent);
+    line-height: 1;
+  }
+  .brand__acs {
+    color: var(--c-accent-text);
+    font-size: 0.85em;
+  }
+  .nav__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1);
+  }
+  .nav__item {
+    position: relative;
+  }
+  .nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    min-height: var(--tap);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--r-sm);
+    color: var(--c-heading);
+    font-weight: var(--fw-strong);
+    font-size: var(--fs-sm);
+    text-decoration: none;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+  .nav__link:hover,
+  .nav__link.is-active {
+    background: var(--c-surface-2);
+    text-decoration: none;
+  }
+  .nav__link.is-active {
+    box-shadow: inset 0 -3px 0 var(--c-accent);
+  }
+  /* The dropdown sits flush against its trigger (no gap), so moving the
+     pointer down into it keeps :hover; it also opens on focus-within and via
+     the button's aria-expanded state for keyboard/touch users. */
+  .dropdown {
+    list-style: none;
+    margin: 0;
+    padding: var(--s-2);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 14rem;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md);
+    box-shadow: var(--c-shadow);
+    display: none;
+    z-index: 30;
+  }
+  .nav__item--menu:hover .dropdown,
+  .nav__item--menu:focus-within .dropdown,
+  .nav__item--menu.is-open .dropdown {
+    display: block;
+  }
+  .dropdown a {
+    display: block;
+    padding: 0.6rem 0.75rem;
+    min-height: var(--tap);
+    border-radius: var(--r-sm);
+    color: var(--c-text);
+    font-weight: var(--fw-strong);
+    font-size: var(--fs-sm);
+    text-decoration: none;
+  }
+  .dropdown a:hover,
+  .dropdown a[aria-current='page'] {
+    background: var(--c-surface-2);
+    color: var(--c-heading);
+  }
+  .menu-toggle {
+    display: none;
+    align-items: center;
+    gap: var(--s-2);
+    min-height: var(--tap);
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--r-sm);
+    border: 2px solid var(--c-primary);
+    background: transparent;
+    color: var(--c-primary);
+    font-weight: var(--fw-strong);
+    cursor: pointer;
+  }
+  .menu-toggle__icon {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .menu-toggle__icon span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+  }
+  .mobile {
+    background: var(--c-surface);
+    border-bottom: 1px solid var(--c-border);
+    padding-block: var(--s-4) var(--s-5);
+  }
+  .mobile__group {
+    margin: var(--s-3) 0 var(--s-1);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-strong);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--c-text-2);
+  }
+  .mobile__list {
+    list-style: none;
+    margin: 0 0 var(--s-3);
+    padding: 0;
+  }
+  .mobile__list a {
+    display: block;
+    padding: 0.7rem 0.5rem;
+    min-height: var(--tap);
+    font-weight: var(--fw-strong);
+    color: var(--c-heading);
+    text-decoration: none;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .mobile__list a[aria-current='page'] {
+    color: var(--c-accent-text);
+  }
+  .mobile__tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4);
+    align-items: center;
+    margin-top: var(--s-4);
+  }
+  @media (max-width: 71rem) {
+    .nav,
+    .bar__cta {
+      display: none;
+    }
+    .menu-toggle {
+      display: inline-flex;
+    }
+    .band__palette {
+      display: none;
+    }
+  }
+  @media (max-width: 24rem) {
+    .menu-toggle [data-menu-label] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+    }
+    .bar__inner {
+      gap: var(--s-2);
+    }
+  }
+  @media (min-width: 71.01rem) {
+    .mobile {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  // Desktop dropdown: click/keyboard toggle with Escape and outside-click close.
+  for (const dd of document.querySelectorAll<HTMLElement>('[data-dropdown]')) {
+    const button = dd.querySelector<HTMLButtonElement>('[data-dropdown-button]')!;
+    const set = (open: boolean) => {
+      dd.classList.toggle('is-open', open);
+      button.setAttribute('aria-expanded', String(open));
+    };
+    button.addEventListener('click', () => set(!dd.classList.contains('is-open')));
+    dd.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        set(false);
+        button.focus();
+      }
+    });
+    document.addEventListener('click', (e) => {
+      if (!dd.contains(e.target as Node)) set(false);
+    });
+    dd.addEventListener('mouseleave', () => set(false));
+  }
+  // Mobile menu
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-mobile-menu]');
+  if (toggle && menu) {
+    const label = toggle.querySelector('[data-menu-label]')!;
+    const open = () => {
+      menu.hidden = false;
+      toggle.setAttribute('aria-expanded', 'true');
+      label.textContent = 'Închide';
+      menu.querySelector<HTMLElement>('a, button, select')?.focus();
+    };
+    const close = (refocus = false) => {
+      menu.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+      label.textContent = 'Meniu';
+      if (refocus) toggle.focus();
+    };
+    toggle.addEventListener('click', () => (menu.hidden ? open() : close()));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menu.hidden) close(true);
+    });
+  }
+</script>

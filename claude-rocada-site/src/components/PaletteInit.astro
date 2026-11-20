@@ -1,0 +1,10 @@
+---
+/**
+ * Inline, render-blocking script that restores the stored palette before first
+ * paint. Kept tiny and dependency-free; storage failures fall back to the default.
+ */
+import { STORAGE_KEY, paletteIds, defaultPalette } from '../lib/palettes';
+const payload = JSON.stringify({ key: STORAGE_KEY, ids: paletteIds, def: defaultPalette });
+---
+
+<script is:inline set:html={`(function(){var c=${payload};var p=c.def;try{var s=localStorage.getItem(c.key);if(s&&c.ids.indexOf(s)>-1)p=s;}catch(e){}document.documentElement.setAttribute('data-palette',p);})();`} />

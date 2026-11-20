@@ -1,0 +1,49 @@
+---
+import { withBase } from '../../lib/url';
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHead from '../../components/PageHead.astro';
+import Gallery from '../../components/Gallery.astro';
+import SourceNote from '../../components/SourceNote.astro';
+import { photo } from '../../lib/images';
+import { t } from '../../i18n';
+
+export async function getStaticPaths() {
+  const albums = await getCollection('galleries');
+  return albums.map((album) => ({ params: { album: album.id }, props: { album } }));
+}
+const { album } = Astro.props;
+const { Content } = await render(album);
+const s = t();
+const photos = album.data.photos.map((p) => ({ src: photo(p.file)!, alt: p.alt }));
+const subtitle = [album.data.year, album.data.location].filter(Boolean).join(' · ');
+---
+
+<Base title={album.data.title} description={`${album.data.title} — ${s.gallery.photos(photos.length)}.`}>
+  <PageHead title={album.data.title} subtitle={subtitle} eyebrow={s.gallery.title}>
+    <p class="meta album-meta">
+      <a href={withBase('/galerie/')}>← {s.gallery.title}</a>
+      <span>{s.gallery.photos(photos.length)}</span>
+      {album.data.album_url && <a href={album.data.album_url} rel="noopener">{s.gallery.openExternal(album.data.album_count)} ↗</a>}
+    </p>
+  </PageHead>
+  <section class="section">
+    <div class="wrap">
+      <div class="prose album-text"><Content /></div>
+      {photos.length > 0 && <Gallery photos={photos} title={album.data.title} />}
+      {!photos.length && album.data.album_url && (
+        <p><a class="btn" href={album.data.album_url} rel="noopener">{s.gallery.openExternal(album.data.album_count)} ↗</a></p>
+      )}
+      <SourceNote url={album.data.source_url} label="Fotografii preluate din galeria site-ului clubului" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .album-meta {
+    margin-top: var(--s-4);
+  }
+  .album-text {
+    margin-bottom: var(--s-5);
+  }
+</style>

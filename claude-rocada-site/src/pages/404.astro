@@ -1,0 +1,27 @@
+---
+import { withBase } from '../lib/url';
+import Base from '../layouts/Base.astro';
+import { t } from '../i18n';
+const s = t();
+---
+
+<Base title={s.notFound.title} description={s.notFound.text}>
+  <section class="section">
+    <div class="wrap wrap--prose nf">
+      <p class="eyebrow">404</p>
+      <h1>{s.notFound.title}</h1>
+      <p class="lead">{s.notFound.text}</p>
+      <p class="btn-row">
+        <a class="btn" href={withBase('/')}>{s.notFound.home}</a>
+        <a class="btn btn--ghost" href={withBase('/arhiva/')}>{s.nav.archive}</a>
+        <a class="btn btn--ghost" href={withBase('/noutati/')}>{s.nav.news}</a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    padding-block: var(--s-8);
+  }
+</style>

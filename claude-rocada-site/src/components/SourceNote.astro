@@ -1,0 +1,25 @@
+---
+/** Attribution link back to the original club website page a text came from. */
+interface Props {
+  url?: string;
+  label?: string;
+}
+const { url, label = 'Text preluat din pagina originală a clubului' } = Astro.props;
+---
+
+{url && (
+  <p class="source">
+    {label}: <a href={url} rel="noopener">{new URL(url).hostname}{new URL(url).pathname}</a>
+  </p>
+)}
+
+<style>
+  .source {
+    font-size: var(--fs-sm);
+    color: var(--c-text-2);
+    margin-top: var(--s-6);
+    padding-top: var(--s-3);
+    border-top: 1px dashed var(--c-border);
+    overflow-wrap: anywhere;
+  }
+</style>

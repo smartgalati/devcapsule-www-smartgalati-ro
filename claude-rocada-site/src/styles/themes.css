@@ -1,0 +1,198 @@
+/*
+ * Semantic color tokens. Every palette redefines the same set so components
+ * never reference raw colors. Default palette: "Rocada" (navy ink on warm paper
+ * with amber accents). Adapted open-source palettes are credited in
+ * public/licenses/palettes.txt; values were adjusted where needed for WCAG AA
+ * text contrast on the web (see tests/contrast.mjs).
+ */
+:root,
+[data-palette='rocada'] {
+  color-scheme: light;
+  --c-bg: #f6f1e7;
+  --c-bg-2: #ede6d6;
+  --c-surface: #fffcf5;
+  --c-surface-2: #f2ecdd;
+  --c-text: #1e2537;
+  --c-text-2: #4a5468;
+  --c-heading: #172038;
+  --c-primary: #1f3b63;
+  --c-primary-hover: #17304f;
+  --c-on-primary: #ffffff;
+  --c-accent: #c8811c;
+  --c-accent-text: #8a5310;
+  --c-accent-soft: #f6e3c2;
+  --c-link: #1a4d8f;
+  --c-border: #d8cfba;
+  --c-border-strong: #8f8468;
+  --c-focus: #b95a05;
+  --c-band: #172a47;
+  --c-band-2: #213a5f;
+  --c-band-text: #f6f1e7;
+  --c-band-muted: #d6dce8;
+  --c-band-accent: #f2b25a;
+  --c-board-dark: #cbbf9f;
+  --c-board-light: #f6f1e7;
+  --c-shadow: 0 10px 30px -14px rgba(23, 42, 71, 0.35);
+  --c-selection: #f2d9ae;
+  --c-focus-band: #f2b25a;
+}
+
+/* Solarized Light — Ethan Schoonover (MIT). base03..base3, yellow, blue, orange. */
+[data-palette='solarized-light'] {
+  color-scheme: light;
+  --c-bg: #fdf6e3;
+  --c-bg-2: #eee8d5;
+  --c-surface: #fffdf6;
+  --c-surface-2: #f3edda;
+  --c-text: #073642;
+  --c-text-2: #4f636a;
+  --c-heading: #002b36;
+  --c-primary: #1f6f8b;
+  --c-primary-hover: #17596f;
+  --c-on-primary: #fdf6e3;
+  --c-accent: #b58900;
+  --c-accent-text: #7a5c00;
+  --c-accent-soft: #f5e9bd;
+  --c-link: #17609c;
+  --c-border: #d9d2bd;
+  --c-border-strong: #8a8470;
+  --c-focus: #b4400f;
+  --c-band: #073642;
+  --c-band-2: #0d4452;
+  --c-band-text: #fdf6e3;
+  --c-band-muted: #c9d3cf;
+  --c-band-accent: #e6b422;
+  --c-board-dark: #cfc7ad;
+  --c-board-light: #fdf6e3;
+  --c-shadow: 0 10px 30px -14px rgba(7, 54, 66, 0.35);
+  --c-selection: #f1e4b3;
+  --c-focus-band: #e6b422;
+}
+
+/* Solarized Dark — Ethan Schoonover (MIT). */
+[data-palette='solarized-dark'] {
+  color-scheme: dark;
+  --c-bg: #002b36;
+  --c-bg-2: #073642;
+  --c-surface: #073642;
+  --c-surface-2: #0b4350;
+  --c-text: #e4ecea;
+  --c-text-2: #a9b8b4;
+  --c-heading: #fdf6e3;
+  --c-primary: #6dbbe0;
+  --c-primary-hover: #8fcce8;
+  --c-on-primary: #002b36;
+  --c-accent: #d3a11f;
+  --c-accent-text: #e8bb3e;
+  --c-accent-soft: #2f4a3a;
+  --c-link: #7fc1e0;
+  --c-border: #1f4c58;
+  --c-border-strong: #5a8a96;
+  --c-focus: #f0a04b;
+  --c-band: #00212a;
+  --c-band-2: #073642;
+  --c-band-text: #fdf6e3;
+  --c-band-muted: #b9c8c4;
+  --c-band-accent: #e8bb3e;
+  --c-board-dark: #0b4350;
+  --c-board-light: #073642;
+  --c-shadow: 0 10px 30px -14px rgba(0, 0, 0, 0.6);
+  --c-selection: #2f5a6b;
+  --c-focus-band: #f0a04b;
+}
+
+/* Catppuccin Latte — Catppuccin (MIT). base, mantle, text, subtext, blue, peach. */
+[data-palette='catppuccin-latte'] {
+  color-scheme: light;
+  --c-bg: #eff1f5;
+  --c-bg-2: #e6e9ef;
+  --c-surface: #ffffff;
+  --c-surface-2: #f2f4f8;
+  --c-text: #4c4f69;
+  --c-text-2: #5c5f77;
+  --c-heading: #303446;
+  --c-primary: #1a56d6;
+  --c-primary-hover: #1546b0;
+  --c-on-primary: #ffffff;
+  --c-accent: #fe640b;
+  --c-accent-text: #b04104;
+  --c-accent-soft: #ffe1cc;
+  --c-link: #1a56d6;
+  --c-border: #ccd0da;
+  --c-border-strong: #6c7086;
+  --c-focus: #b4450b;
+  --c-band: #303446;
+  --c-band-2: #414559;
+  --c-band-text: #eff1f5;
+  --c-band-muted: #c6d0f5;
+  --c-band-accent: #f9a66a;
+  --c-board-dark: #ccd0da;
+  --c-board-light: #eff1f5;
+  --c-shadow: 0 10px 30px -14px rgba(76, 79, 105, 0.35);
+  --c-selection: #dce0e8;
+  --c-focus-band: #f9a66a;
+}
+
+/* Nord — Sven Greb (MIT). Polar Night, Snow Storm, Frost, Aurora. */
+[data-palette='nord'] {
+  color-scheme: dark;
+  --c-bg: #2e3440;
+  --c-bg-2: #3b4252;
+  --c-surface: #3b4252;
+  --c-surface-2: #434c5e;
+  --c-text: #eceff4;
+  --c-text-2: #c9d0dc;
+  --c-heading: #ffffff;
+  --c-primary: #93c9d8;
+  --c-primary-hover: #a3d0dd;
+  --c-on-primary: #2e3440;
+  --c-accent: #ebcb8b;
+  --c-accent-text: #ebcb8b;
+  --c-accent-soft: #4c566a;
+  --c-link: #a5d2e0;
+  --c-border: #4c566a;
+  --c-border-strong: #8b96ad;
+  --c-focus: #ebcb8b;
+  --c-band: #242933;
+  --c-band-2: #2e3440;
+  --c-band-text: #eceff4;
+  --c-band-muted: #d0d6df;
+  --c-band-accent: #ebcb8b;
+  --c-board-dark: #434c5e;
+  --c-board-light: #3b4252;
+  --c-shadow: 0 10px 30px -14px rgba(0, 0, 0, 0.6);
+  --c-selection: #5e81ac;
+  --c-focus-band: #ebcb8b;
+}
+
+/* Catppuccin Mocha — Catppuccin (MIT). */
+[data-palette='catppuccin-mocha'] {
+  color-scheme: dark;
+  --c-bg: #1e1e2e;
+  --c-bg-2: #181825;
+  --c-surface: #313244;
+  --c-surface-2: #45475a;
+  --c-text: #cdd6f4;
+  --c-text-2: #bac2de;
+  --c-heading: #f5e0dc;
+  --c-primary: #96bdff;
+  --c-primary-hover: #a6c8ff;
+  --c-on-primary: #1e1e2e;
+  --c-accent: #fab387;
+  --c-accent-text: #fab387;
+  --c-accent-soft: #45475a;
+  --c-link: #89dceb;
+  --c-border: #45475a;
+  --c-border-strong: #7f849c;
+  --c-focus: #f9e2af;
+  --c-band: #11111b;
+  --c-band-2: #181825;
+  --c-band-text: #cdd6f4;
+  --c-band-muted: #bac2de;
+  --c-band-accent: #fab387;
+  --c-board-dark: #313244;
+  --c-board-light: #1e1e2e;
+  --c-shadow: 0 10px 30px -14px rgba(0, 0, 0, 0.6);
+  --c-selection: #585b70;
+  --c-focus-band: #f9e2af;
+}

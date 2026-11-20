@@ -1,0 +1,42 @@
+---
+import { withBase } from '../lib/url';
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import SourceNote from '../components/SourceNote.astro';
+import { site } from '../config/site';
+import { t } from '../i18n';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages');
+  // Contact has its own page with the reveal widget.
+  return pages.filter((p) => p.id !== 'contact').map((page) => ({ params: { slug: page.id }, props: { page } }));
+}
+const { page } = Astro.props;
+const { Content } = await render(page);
+const s = t();
+---
+
+<Base title={page.data.title} description={page.data.description}>
+  <PageHead title={page.data.title} subtitle={page.data.subtitle} />
+  <section class="section">
+    <div class="wrap wrap--prose">
+      <div class="prose">
+        <Content />
+      </div>
+      {page.id === 'inscrieri' && (
+        <p class="btn-row">
+          <a class="btn" href={site.enrollmentUrl} rel="noopener">{s.contact.formCta} ↗</a>
+          <a class="btn btn--ghost" href={withBase('/contact/')}>{s.nav.contact}</a>
+        </p>
+      )}
+      {page.id === 'sustine' && (
+        <p class="btn-row">
+          <a class="btn" href={site.redirectUrl} rel="noopener">Redirecționează 3,5% online ↗</a>
+          <a class="btn btn--ghost" href={withBase('/contact/')}>{s.home.contactCta}</a>
+        </p>
+      )}
+      <SourceNote url={page.data.source_url} />
+    </div>
+  </section>
+</Base>

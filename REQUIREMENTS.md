@@ -168,7 +168,9 @@ the Pages base path is. Guide: [GitHub Pages deployment](docs/github-pages-deplo
 ### R-SITE-007 amendment: GitHub Pages is the only hosting path kept (2026-11-20)
 
 The owner chose `claude-rocada-site/` as the club's site, published from this
-repository through GitHub Pages at `https://webtest.smartgalati.ro/`, and asked
+repository through GitHub Pages at `https://webtest.smartgalati.ro/` (the test
+address at the time; `https://test.smartgalati.ro/` since the move to the
+`smartgalati` organization), and asked
 for a cleanup: the other prototypes (`ag-flash3.8-site/`, `codex-astra-site/`,
 `smartgalati-test5-site/`), the unrelated `mycodespace-site/` with its records,
 and the Google Cloud Storage deployment scripts (`scripts/gcs/`, the Rocada

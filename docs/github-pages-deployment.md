@@ -87,7 +87,7 @@ missing. `scripts/pages.sh` derives the address from the `origin` remote when
 ## Custom domain (optional)
 
 In *Settings → Pages → Custom domain* enter the test domain, e.g.
-`webtest.smartgalati.ro`, and add a DNS `CNAME` record for that name
+`test.smartgalati.ro`, and add a DNS `CNAME` record for that name
 pointing at `smartgalati.github.io` in the domain's zone. GitHub verifies the
 record, provisions HTTPS, and `configure-pages` then reports the domain as the
 origin with an empty base path on the next run, so the site rebuilds at the

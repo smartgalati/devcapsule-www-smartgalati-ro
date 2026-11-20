@@ -9,9 +9,9 @@ import { pack, validateCandidate } from '../scripts/candidate.mjs';
 
 const source = {
   tag: 'website-candidate-123-1', repository: 'smartgalati/devcapsule-www-smartgalati-ro',
-  runId: '123', runAttempt: '1', sourceSha: 'a'.repeat(40), origin: 'https://webtest.smartgalati.ro',
+  runId: '123', runAttempt: '1', sourceSha: 'a'.repeat(40), origin: 'https://test.smartgalati.ro',
 };
-function site(t, canonical = 'https://webtest.smartgalati.ro/') {
+function site(t, canonical = 'https://test.smartgalati.ro/') {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'candidate-test-'));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
   const dir = path.join(root, 'site');
@@ -52,6 +52,6 @@ test('metadata must agree with its tag', () => {
   const good = { schema: 1, ...source, digest: 'sha256:' + 'b'.repeat(64) };
   assert.equal(validateCandidate(good, source.tag), good);
   assert.throws(() => validateCandidate({ ...good, runId: '124' }, source.tag));
-  assert.throws(() => validateCandidate({ ...good, origin: 'https://webtest.smartgalati.ro/' }, source.tag));
+  assert.throws(() => validateCandidate({ ...good, origin: 'https://test.smartgalati.ro/' }, source.tag));
   assert.throws(() => validateCandidate(good, 'v1.0.0'));
 });

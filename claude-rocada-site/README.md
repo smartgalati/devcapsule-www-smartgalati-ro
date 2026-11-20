@@ -2,7 +2,7 @@
 
 Independent static website candidate for **ACS Smart Galați**, commissioned by the
 [test4 work order](../engineering-docs/work-orders/2026-09-27-smartgalati-test4-prototype.md).
-Published at **https://webtest.smartgalati.ro/** through GitHub Pages. The design ("Rocada" — castling:
+Test site: **https://test.smartgalati.ro/** (GitHub Pages); production is published from it in a second step, see [publishing](../docs/publishing.md). The design ("Rocada" — castling:
 safety first, then development) is navy ink and amber on warm paper, with a Fraunces
 display face and the Atkinson Hyperlegible body face, six selectable palettes, and
 content taken only from the club's own website.

@@ -26,15 +26,11 @@ The reserved workstream was initialized. Transitioned from single-stream mode on
 
 ## Planned Next Step
 
-Finish the two-step publishing setup (see the latest slice): the owner makes
-this repository public or moves the organization to a plan with Pages for
-private repositories, enables Pages (Source: GitHub Actions), and moves the
-test domain `webtest.smartgalati.ro` here (remove it from
-`Luciangl/devcapsule-chessclub-website`, point its `CNAME` at
-`smartgalati.github.io`, set it as this repository's custom domain, enforce
-HTTPS). Then run the Pages workflow and confirm that it publishes the test
-site and creates a `website-candidate-*` release, and promote that candidate
-from the production repository once it exists.
+Finish step two of the two-step publishing: the owner creates the production
+repository in the `smartgalati` organization and names it; the prepared
+content (publish workflow, promotion script, tests, README) is pushed there;
+the owner sets its custom domain with HTTPS; then promote a candidate and
+confirm `/build-info.json` on the production site.
 
 ## Latest Delivered Slice (2026-11-20): new home and two-step publishing
 
@@ -53,6 +49,14 @@ from the production repository once it exists.
   eight unit tests, README), is written and tested locally but not pushed:
   the repository does not exist yet and its name and domain are the owner's
   to choose.
+- Step one verified on GitHub (2026-11-20): the owner made the repository
+  public and set the test domain `test.smartgalati.ro` (CNAME to
+  `smartgalati.github.io`, HTTPS enforced); Pages source is GitHub Actions.
+  Run 44656136236 built for `https://test.smartgalati.ro`, passed the
+  checks, deployed, and created `website-candidate-44656136236-1`. A run
+  made before the domain was set had published a sub-path build, which then
+  could not load its assets at the domain root; a domain change always needs
+  a new run.
 - Validation: `npm test` in `claude-rocada-site/` 14/14; pack then promote
   run locally on the real built site (569 files, 291 pages, 582 address
   references rewritten, no broken local link). Not yet run on GitHub: Pages
@@ -163,6 +167,3 @@ from the production repository once it exists.
   `ROCADA_SITE`/`PAGES_SITE_URL` (`astro.config.mjs`, `src/config/site.ts`);
   the Pages workflow overrides it. Change the default when the club's final
   domain is decided.
-- The Pages build is compiled for `http://webtest.smartgalati.ro` (what
-  GitHub reports) until *Enforce HTTPS* is enabled in the Pages settings,
-  which the owner intends to do; the next publish then compiles `https://`.

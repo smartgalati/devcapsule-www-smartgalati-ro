@@ -46,13 +46,13 @@ from that directory.
 **End-to-end tests.** Playwright against a running site, opt-in: start
 `npm run preview` (port 4326), then `npm run test:browser && npm run
 test:themes`. For the published address, which is what the Pages workflow
-runs: `PAGES_SITE_URL=http://webtest.smartgalati.ro PAGES_BASE_PATH= npm run
+runs: `PAGES_SITE_URL=https://test.smartgalati.ro PAGES_BASE_PATH= npm run
 pages:build`, then the same variables with `npm run pages:check`. The site's
 `README.md` holds the full description.
 
 **Smoke test.** `npm run preview`, then
 `curl --fail --silent http://localhost:4326/` returns the home page. After a
-deployment: `curl --fail --silent --location https://webtest.smartgalati.ro/`.
+deployment: `curl --fail --silent --location https://test.smartgalati.ro/`.
 
 **Gate.** Before a checkpoint and before integration, for a change under
 `claude-rocada-site/`: the unit tests, then `npm run build`. A change to

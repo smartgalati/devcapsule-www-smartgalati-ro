@@ -4,8 +4,8 @@ The club's website is published in two steps, from two repositories.
 
 | | Repository | What it publishes |
 |---|---|---|
-| 1. Test | this one, `smartgalati/devcapsule-www-smartgalati-ro` | every change on `main`, to the **test site** |
-| 2. Production | the production repository named in its own README | one **reviewed candidate**, chosen by hand, to the **production site** |
+| 1. Test | this one, `smartgalati/devcapsule-www-smartgalati-ro` | every change on `main`, to the **test site**, https://test.smartgalati.ro/ |
+| 2. Production | [`smartgalati/livewebsite-smartgalati-ro`](https://github.com/smartgalati/livewebsite-smartgalati-ro) | one **reviewed candidate**, chosen by hand, to the **production site** |
 
 A GitHub repository has exactly one Pages site, which is why production has a
 repository of its own. That repository holds no site source.
@@ -34,7 +34,8 @@ another domain by swapping addresses.
 ## Step 2: publish to production (by hand)
 
 1. Review the test site.
-2. In the production repository: **Actions → Publish production website →
+2. In [`smartgalati/livewebsite-smartgalati-ro`](https://github.com/smartgalati/livewebsite-smartgalati-ro):
+   **[Actions → Publish production website](https://github.com/smartgalati/livewebsite-smartgalati-ro/actions/workflows/publish.yml) →
    Run workflow**, branch `main`, paste the candidate tag.
 3. It downloads the candidate, verifies its checksum and origin, replaces the
    test address with the production address in the pages, checks the result
@@ -56,4 +57,4 @@ releases you may want to return to; delete old ones freely otherwise.
 The packaging code is
 [`claude-rocada-site/scripts/candidate.mjs`](../claude-rocada-site/scripts/candidate.mjs)
 with tests in `claude-rocada-site/tests/candidate.test.mjs`; the promotion
-code and its tests live in the production repository.
+code and its tests live in [`smartgalati/livewebsite-smartgalati-ro`](https://github.com/smartgalati/livewebsite-smartgalati-ro).

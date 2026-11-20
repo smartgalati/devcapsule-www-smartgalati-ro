@@ -26,11 +26,10 @@ The reserved workstream was initialized. Transitioned from single-stream mode on
 
 ## Planned Next Step
 
-Finish step two of the two-step publishing: the owner creates the production
-repository in the `smartgalati` organization and names it; the prepared
-content (publish workflow, promotion script, tests, README) is pushed there;
-the owner sets its custom domain with HTTPS; then promote a candidate and
-confirm `/build-info.json` on the production site.
+Finish step two of the two-step publishing: the owner sets the production
+custom domain, with HTTPS, on `smartgalati/livewebsite-smartgalati-ro`
+(Settings → Pages); then run *Publish production website* there with a
+candidate tag and confirm `/build-info.json` on the production site.
 
 ## Latest Delivered Slice (2026-11-20): new home and two-step publishing
 
@@ -45,10 +44,14 @@ confirm `/build-info.json` on the production site.
   `website-candidate-<run>-<attempt>` prerelease
   (`claude-rocada-site/scripts/candidate.mjs`, four unit tests). Guide:
   `docs/publishing.md`.
-- Step two, the production repository (publish workflow, promotion script,
-  eight unit tests, README), is written and tested locally but not pushed:
-  the repository does not exist yet and its name and domain are the owner's
-  to choose.
+- Step two is `smartgalati/livewebsite-smartgalati-ro` (created by the
+  owner, public): publish workflow, promotion script with eight unit tests,
+  README; Pages source is GitHub Actions. Its run 44657601490 passed the
+  tests and the Pages read, then stopped as designed because no custom
+  domain is set yet. The promotion script was also run locally against the
+  real candidate `website-candidate-44656567341-1` (569 files, 291 pages,
+  582 address references rewritten, link check clean). A production deploy
+  has not happened yet.
 - Step one verified on GitHub (2026-11-20): the owner made the repository
   public and set the test domain `test.smartgalati.ro` (CNAME to
   `smartgalati.github.io`, HTTPS enforced); Pages source is GitHub Actions.

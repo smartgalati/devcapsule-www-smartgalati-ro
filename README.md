@@ -35,8 +35,9 @@ Two steps, described in [the publishing guide](docs/publishing.md):
    the **test site** by
    [`.github/workflows/claude-rocada-pages.yml`](.github/workflows/claude-rocada-pages.yml),
    which also saves the published files as a *website candidate* release.
-2. The production repository publishes one reviewed candidate, chosen by its
-   tag, to the **production site**.
+2. [`smartgalati/livewebsite-smartgalati-ro`](https://github.com/smartgalati/livewebsite-smartgalati-ro)
+   publishes one reviewed candidate, chosen by its tag, to the **production
+   site**.
 
 Enabling Pages (Source: GitHub Actions), the custom domains and plan
 eligibility for a private repository are owner steps; see
